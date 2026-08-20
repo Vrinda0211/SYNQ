@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/Home.css";
+import { Link } from "react-router-dom";
 
 export default function Home()
 {
@@ -16,13 +17,13 @@ export default function Home()
           </p>
 
           <div className="Buttons">
-            <a href="#/request" className="RequestButton">
+            <Link to="/request" className="RequestButton">
               Request Help
-            </a>
+            </Link>
 
-            <a href="#/offer" className="OfferButton">
+            <Link to="/offer" className="OfferButton">
               Offer Help
-            </a>
+            </Link>
           </div>
 
         </div>
