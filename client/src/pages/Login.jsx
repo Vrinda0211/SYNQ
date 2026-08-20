@@ -7,9 +7,10 @@ export default function Login()
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [msg,setMsg]=useState("");
+    const [busy,setBusy]=useState(false);
     const navigate=useNavigate();
 
-    function handleSubmit(e)
+    async function handleSubmit(e)
     {
         e.preventDefault();
         setMsg("");
@@ -20,7 +21,48 @@ export default function Login()
             return;
         }
 
-        setMsg("Login details are valid.");
+        setBusy(true);
+
+        try
+        {
+            const response=await fetch("http://localhost:3001/api/auth/login",
+                {
+                    method:"POST",
+                    headers:
+                    {
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify(
+                        {
+                            email,
+                            password
+                        }
+                    )
+                }
+            );
+
+            const data=await response.json();
+
+            if(!response.ok)
+            {
+                setMsg(data.error||"Login failed.");
+                return;
+            }
+
+            localStorage.setItem("synq_token",data.token);
+            localStorage.setItem("synq_user",JSON.stringify(data.user));
+
+            navigate("/");
+        }
+        catch(error)
+        {
+            console.error(error);
+            setMsg("Unable to connect to the server.");
+        }
+        finally
+        {
+            setBusy(false);
+        }
     }
 
     return(
@@ -65,8 +107,9 @@ export default function Login()
                 <button
                     type="submit"
                     className="LoginButton"
+                    disabled={busy}
                 >
-                    Login
+                    {busy?"Logging in...":"Login"}
                 </button>
 
                 <p className="SignupPrompt">
