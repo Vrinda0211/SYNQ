@@ -9,9 +9,10 @@ export default function Signup()
     const [password,setPassword]=useState("");
     const [confirmPassword,setConfirmPassword]=useState("");
     const [msg,setMsg]=useState("");
+    const [busy,setBusy]=useState(false);
     const navigate=useNavigate();
 
-    function handleSubmit(e)
+    async function handleSubmit(e)
     {
         e.preventDefault();
         setMsg("");
@@ -34,7 +35,49 @@ export default function Signup()
             return;
         }
 
-        setMsg("Account details are valid.");
+        setBusy(true);
+
+        try
+        {
+            const response=await fetch("http://localhost:3001/api/auth/signup",
+                {
+                    method:"POST",
+                    headers:
+                    {
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify(
+                        {
+                            name,
+                            email,
+                            password
+                        }
+                    )
+                }
+            );
+
+            const data=await response.json();
+
+            if(!response.ok)
+            {
+                setMsg(data.error||"Could not create account.");
+                return;
+            }
+
+            localStorage.setItem("synq_token",data.token);
+            localStorage.setItem("synq_user",JSON.stringify(data.user));
+
+            navigate("/");
+        }
+        catch(error)
+        {
+            console.error(error);
+            setMsg("Unable to connect to the server.");
+        }
+        finally
+        {
+            setBusy(false);
+        }
     }
 
     return(
@@ -103,8 +146,9 @@ export default function Signup()
                 <button
                     type="submit"
                     className="SignupButton"
+                    disabled={busy}
                 >
-                    Create Account
+                    {busy?"Creating Account...":"Create Account"}
                 </button>
 
                 <p className="LoginPrompt">
