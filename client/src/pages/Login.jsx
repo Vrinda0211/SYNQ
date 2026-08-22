@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 
-export default function Login()
+export default function Login({onLogin})
 {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
@@ -51,6 +51,7 @@ export default function Login()
 
             localStorage.setItem("synq_token",data.token);
             localStorage.setItem("synq_user",JSON.stringify(data.user));
+            onLogin(data.user);
 
             navigate("/");
         }
