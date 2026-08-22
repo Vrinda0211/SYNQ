@@ -1,0 +1,262 @@
+.Header
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    box-sizing: border-box;
+    background: rgba(10,24,42,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(213,184,147,0.15);
+    z-index: 1000;
+}
+
+.HeaderLeft
+{
+    display: flex;
+    align-items: center;
+}
+
+.Logo
+{
+    color: #D5B893;
+    font-family: "Playfair Display",serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+}
+
+.Navigation
+{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+
+.NavLink
+{
+    position: relative;
+    color: rgba(213,184,147,0.82);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 26px 0;
+    transition: color 0.2s ease;
+}
+
+.NavLink:hover
+{
+    color: #D5B893;
+}
+
+.NavLink::after
+{
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    height: 2px;
+    background: #D5B893;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.NavLink:hover::after
+{
+    transform: scaleX(1);
+}
+
+.HeaderRight
+{
+    display: flex;
+    align-items: center;
+}
+
+.AuthButtons
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.LoginNavButton
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 18px;
+    border: 1px solid rgba(213,184,147,0.45);
+    border-radius: 8px;
+    color: #D5B893;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.LoginNavButton:hover
+{
+    border-color: #D5B893;
+    background: rgba(213,184,147,0.08);
+}
+
+.SignupNavButton
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background: #D5B893;
+    color: #102236;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.SignupNavButton:hover
+{
+    background: #e4c9a3;
+}
+
+.ProfileContainer
+{
+    position: relative;
+}
+
+.ProfileButton
+{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.Avatar
+{
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #D5B893;
+    border-radius: 50%;
+    background: #102236;
+    color: #D5B893;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ProfileArrow
+{
+    color: #D5B893;
+    font-size: 10px;
+}
+
+.ProfileMenu
+{
+    position: absolute;
+    top: 56px;
+    right: 0;
+    width: 280px;
+    background: rgba(16,34,54,0.98);
+    border: 1px solid rgba(213,184,147,0.25);
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+    overflow: hidden;
+}
+
+.ProfileInfo
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+}
+
+.MenuAvatar
+{
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid #D5B893;
+    border-radius: 50%;
+    color: #D5B893;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ProfileName
+{
+    color: #D5B893;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.ProfileEmail
+{
+    color: rgba(213,184,147,0.6);
+    font-size: 12px;
+    margin-top: 3px;
+    word-break: break-word;
+}
+
+.MenuDivider
+{
+    height: 1px;
+    background: rgba(213,184,147,0.12);
+}
+
+.MenuItem
+{
+    display: block;
+    padding: 12px 18px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.MenuItem:hover
+{
+    background: rgba(213,184,147,0.08);
+    color: #D5B893;
+}
+
+.LogoutMenuItem
+{
+    width: 100%;
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    color: #e58b8b;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.LogoutMenuItem:hover
+{
+    background: rgba(99,32,36,0.25);
+    color: #ffaaaa;
+}

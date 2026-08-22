@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes,Route } from "react-router-dom";
+import Header from "./components/Header";
 import Home from "./pages/Home";
 import RequestHelp from "./pages/RequestHelp";
 import OfferHelp from "./pages/OfferHelp";
@@ -27,13 +28,20 @@ function App()
     }
 
     return(
-        <Routes>
-            <Route path="/" element={<Home user={user} onLogout={handleLogout}/>}/>
-            <Route path="/request" element={<RequestHelp user={user}/>}/>
-            <Route path="/offer" element={<OfferHelp user={user}/>}/>
-            <Route path="/login" element={<Login onLogin={handleLogin}/>}/>
-            <Route path="/signup" element={<Signup onLogin={handleLogin}/>}/>
-        </Routes>
+        <>
+            <Header
+                user={user}
+                onLogout={handleLogout}
+            />
+
+            <Routes>
+                <Route path="/" element={<Home user={user}/>}/>
+                <Route path="/request" element={<RequestHelp user={user}/>}/>
+                <Route path="/offer" element={<OfferHelp user={user}/>}/>
+                <Route path="/login" element={<Login onLogin={handleLogin}/>}/>
+                <Route path="/signup" element={<Signup onLogin={handleLogin}/>}/>
+            </Routes>
+        </>
     );
 }
 
