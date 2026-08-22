@@ -6,6 +6,7 @@ import RequestHelp from "./pages/RequestHelp";
 import OfferHelp from "./pages/OfferHelp";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import MapDashboard from "./pages/MapDashboard";
 
 function App()
 {
@@ -40,6 +41,7 @@ function App()
                 <Route path="/offer" element={<OfferHelp user={user}/>}/>
                 <Route path="/login" element={<Login onLogin={handleLogin}/>}/>
                 <Route path="/signup" element={<Signup onLogin={handleLogin}/>}/>
+                <Route path="/map" element={<MapDashboard/>}/>
             </Routes>
         </>
     );

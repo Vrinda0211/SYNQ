@@ -1,0 +1,197 @@
+.MapDashboard
+{
+    min-height: 100vh;
+    width: 100%;
+    padding: 110px 40px 40px 40px;
+    box-sizing: border-box;
+    background: #0A182A;
+    color: #D5B893;
+    font-family: Inter,system-ui,Arial,sans-serif;
+}
+
+.MapHeader
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto 28px auto;
+}
+
+.MapTitle
+{
+    margin: 0;
+    font-family: "Playfair Display",serif;
+    font-size: 42px;
+}
+
+.MapSubtitle
+{
+    margin: 8px 0 0 0;
+    color: rgba(213,184,147,0.7);
+    font-size: 16px;
+}
+
+.MapActions
+{
+    display: flex;
+    gap: 12px;
+}
+
+.MapRequestButton,
+.MapOfferButton
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.MapRequestButton
+{
+    background: #D5B893;
+    color: #102236;
+}
+
+.MapOfferButton
+{
+    background: #632024;
+    color: white;
+}
+
+.MapControls
+{
+    max-width: 1400px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    gap: 8px;
+}
+
+.FilterButton
+{
+    padding: 9px 18px;
+    border: 1px solid rgba(213,184,147,0.3);
+    border-radius: 8px;
+    background: transparent;
+    color: rgba(213,184,147,0.75);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.FilterButton.active
+{
+    background: #D5B893;
+    color: #102236;
+    border-color: #D5B893;
+    font-weight: 700;
+}
+
+.MapContent
+{
+    max-width: 1400px;
+    min-height: 580px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 330px;
+    gap: 20px;
+}
+
+.MapPlaceholder
+{
+    min-height: 580px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(213,184,147,0.18);
+    border-radius: 16px;
+    background:
+        linear-gradient(rgba(10,24,42,0.82),rgba(10,24,42,0.92)),
+        url("../assets/images/hero-bg.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.MapIcon
+{
+    font-size: 64px;
+    margin-bottom: 10px;
+}
+
+.MapPlaceholder h2
+{
+    margin: 0 0 8px 0;
+    font-family: "Playfair Display",serif;
+    font-size: 28px;
+}
+
+.MapPlaceholder p
+{
+    margin: 0;
+    color: rgba(213,184,147,0.65);
+}
+
+.ResourcePanel
+{
+    border: 1px solid rgba(213,184,147,0.18);
+    border-radius: 16px;
+    background: rgba(16,34,54,0.7);
+    padding: 22px;
+    box-sizing: border-box;
+}
+
+.ResourcePanel h2
+{
+    margin: 0 0 20px 0;
+    font-family: "Playfair Display",serif;
+    font-size: 24px;
+}
+
+.EmptyResources
+{
+    padding: 20px 0;
+    border-top: 1px solid rgba(213,184,147,0.12);
+}
+
+.EmptyResources p
+{
+    margin: 0 0 6px 0;
+    font-size: 14px;
+}
+
+.EmptyResources span
+{
+    color: rgba(213,184,147,0.55);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+@media(max-width:900px)
+{
+    .MapDashboard
+    {
+        padding: 100px 20px 30px 20px;
+    }
+
+    .MapHeader
+    {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .MapContent
+    {
+        grid-template-columns: 1fr;
+    }
+
+    .MapPlaceholder
+    {
+        min-height: 450px;
+    }
+}
