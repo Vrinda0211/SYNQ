@@ -195,7 +195,48 @@
         min-height: auto;
     }
 }
+
 .Map .leaflet-tile-pane
 {
     filter: sepia(20%) saturate(70%) brightness(104%);
+}
+
+.MatchButton
+{
+    margin-top:12px;
+    padding:8px 12px;
+    border:none;
+    border-radius:7px;
+    background:#D5B893;
+    color:#102236;
+    font-family:Inter,system-ui,Arial,sans-serif;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.MatchButton:hover
+{
+    opacity:0.85;
+}
+
+.MatchPanel
+{
+    margin-bottom:20px;
+    padding-bottom:10px;
+}
+
+.MatchPanel h3
+{
+    margin:0 0 6px 0;
+    font-family:"Playfair Display",serif;
+    font-size:22px;
+    color:#D5B893;
+}
+
+.MatchPanel>p
+{
+    margin:0 0 10px 0;
+    font-size:14px;
+    color:rgba(213,184,147,0.7);
 }
