@@ -43,6 +43,22 @@ const offerPin=L.divIcon(
     iconAnchor:[12,12]
 });
 
+const matchedOfferPin=L.divIcon(
+{
+    className:"MatchedOfferPin",
+    html:
+        `<div style="
+            width:22px;
+            height:22px;
+            border-radius:50%;
+            background:#2F8F46;
+            border:4px solid #F4E8D7;
+            box-shadow:0 0 0 5px rgba(47,143,70,0.25),0 3px 10px rgba(0,0,0,0.4);
+        "></div>`,
+    iconSize:[30,30],
+    iconAnchor:[15,15]
+});
+
 function normalizeLocation(item)
 {
     if(!item)
@@ -105,6 +121,7 @@ export default function MapDashboard()
     const [error,setError]=useState("");
     const [selectedRequest,setSelectedRequest]=useState(null);
     const [matches,setMatches]=useState([]);
+    const [matchedOfferIds,setMatchedOfferIds]=useState([]);
     const [matching,setMatching]=useState(false);
     const [matchError,setMatchError]=useState("");
 
@@ -227,6 +244,7 @@ export default function MapDashboard()
     async function findMatches(request)
     {
         setSelectedRequest(request);
+        setMatchedOfferIds([]);
         setMatches([]);
         setMatchError("");
         setMatching(true);
@@ -270,6 +288,12 @@ export default function MapDashboard()
                 .filter(Boolean);
 
             setMatches(normalizedMatches);
+
+            setMatchedOfferIds(
+                normalizedMatches.map((offer)=>
+                    offer._id
+                )
+            );
         }
         catch(error)
         {
@@ -485,7 +509,13 @@ export default function MapDashboard()
                                         offer.lng
                                     ]
                                 }
-                                icon={offerPin}
+                                icon={
+                                    matchedOfferIds.includes(offer._id)
+                                    ?
+                                    matchedOfferPin
+                                    :
+                                    offerPin
+                                }
                             >
 
                                 <Popup>
