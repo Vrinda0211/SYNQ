@@ -10,6 +10,8 @@ export default function RequestHelp()
     const [urgency,setUrgency]=useState(50);
     const [coords,setCoords]=useState(null);
     const [msg,setMsg]=useState("");
+    const [submitting,setSubmitting]=useState(false);
+
     const navigate=useNavigate();
 
     function useMyLocation()
@@ -25,16 +27,19 @@ export default function RequestHelp()
         setMsg("Waiting for location permission...");
 
         navigator.geolocation.getCurrentPosition(
-            (position)=>{
+            (position)=>
+            {
                 setCoords(
                     {
                         lat:position.coords.latitude,
                         lng:position.coords.longitude
                     }
                 );
+
                 setMsg("Location captured.");
             },
-            ()=>{
+            ()=>
+            {
                 setMsg("Could not get your location.");
             },
             {
@@ -44,54 +49,142 @@ export default function RequestHelp()
         );
     }
 
-    function handleSubmit(e)
+    async function handleSubmit(e)
     {
         e.preventDefault();
         setMsg("");
 
         if(!category||!location||!details)
         {
-            setMsg("Please fill category,location and details.");
+            setMsg("Please fill category, location and details.");
             return;
         }
 
-        setMsg("Request details are valid.");
+        setSubmitting(true);
+
+        try
+        {
+            const response=await fetch(
+                "http://localhost:3001/api/requests",
+                {
+                    method:"POST",
+                    headers:
+                    {
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify(
+                        {
+                            category,
+                            details,
+                            urgency,
+                            locationLabel:location,
+                            location:coords
+                        }
+                    )
+                }
+            );
+
+            const data=await response.json();
+
+            if(!response.ok)
+            {
+                throw new Error(
+                    data.error||"Failed to submit request."
+                );
+            }
+
+            setMsg("Request submitted successfully.");
+
+            setCategory("");
+            setLocation("");
+            setDetails("");
+            setUrgency(50);
+            setCoords(null);
+
+            setTimeout(()=>
+            {
+                navigate("/map");
+            },1000);
+        }
+        catch(error)
+        {
+            setMsg(
+                error.message||"Could not submit request."
+            );
+        }
+        finally
+        {
+            setSubmitting(false);
+        }
     }
 
     return(
         <div className="RequestHelp">
-            <form className="RequestForm" onSubmit={handleSubmit}>
-                <h1 className="RequestTitle">Request Help</h1>
+            <form
+                className="RequestForm"
+                onSubmit={handleSubmit}
+            >
+                <h1 className="RequestTitle">
+                    Request Help
+                </h1>
 
                 <div className="FormGroup">
-                    <label className="FormLabel">Category</label>
+                    <label className="FormLabel">
+                        Category
+                    </label>
 
                     <div className="SelectWrapper">
                         <select
                             className="FormSelect"
                             value={category}
-                            onChange={(e)=>setCategory(e.target.value)}
+                            onChange={(e)=>
+                                setCategory(e.target.value)
+                            }
                         >
-                            <option value="">Select category</option>
-                            <option value="Medical Assistance">Medical Assistance</option>
-                            <option value="Food & Water">Food & Water</option>
-                            <option value="Shelter & Housing">Shelter & Housing</option>
-                            <option value="Search & Rescue">Search & Rescue</option>
-                            <option value="Supplies & Essentials">Supplies & Essentials</option>
-                            <option value="Sanitation & Hygiene">Sanitation & Hygiene</option>
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="Medical Assistance">
+                                Medical Assistance
+                            </option>
+
+                            <option value="Food & Water">
+                                Food & Water
+                            </option>
+
+                            <option value="Shelter & Housing">
+                                Shelter & Housing
+                            </option>
+
+                            <option value="Search & Rescue">
+                                Search & Rescue
+                            </option>
+
+                            <option value="Supplies & Essentials">
+                                Supplies & Essentials
+                            </option>
+
+                            <option value="Sanitation & Hygiene">
+                                Sanitation & Hygiene
+                            </option>
                         </select>
                     </div>
                 </div>
 
                 <div className="FormGroup">
-                    <label className="FormLabel">Location</label>
+                    <label className="FormLabel">
+                        Location
+                    </label>
 
                     <input
                         className="FormInput"
                         type="text"
                         value={location}
-                        onChange={(e)=>setLocation(e.target.value)}
-                        placeholder="Enter location (city,landmark,address...)"
+                        onChange={(e)=>
+                            setLocation(e.target.value)
+                        }
+                        placeholder="Enter location (city, landmark, address...)"
                     />
                 </div>
 
@@ -105,26 +198,49 @@ export default function RequestHelp()
                     </button>
 
                     <div className="Coordinates">
-                        {coords?`${coords.lat.toFixed(4)},${coords.lng.toFixed(4)}`:"No coords"}
+                        {
+                            coords
+                            ?
+                            `${coords.lat.toFixed(4)},${coords.lng.toFixed(4)}`
+                            :
+                            "No coords"
+                        }
                     </div>
                 </div>
 
                 <div className="FormGroup">
-                    <label className="FormLabel">Details</label>
+                    <label className="FormLabel">
+                        Details
+                    </label>
 
                     <textarea
                         className="DetailsInput"
                         value={details}
-                        onChange={(e)=>setDetails(e.target.value)}
+                        onChange={(e)=>
+                            setDetails(e.target.value)
+                        }
                         placeholder="Describe the assistance needed"
                     />
                 </div>
 
                 <div className="FormGroup">
                     <div className="UrgencyHeader">
-                        <span>Urgency</span>
                         <span>
-                            {urgency>=75?"High":urgency>=40?"Moderate":"Low"}
+                            Urgency
+                        </span>
+
+                        <span>
+                            {
+                                urgency>=75
+                                ?
+                                "High"
+                                :
+                                urgency>=40
+                                ?
+                                "Moderate"
+                                :
+                                "Low"
+                            }
                         </span>
                     </div>
 
@@ -134,7 +250,11 @@ export default function RequestHelp()
                         min="0"
                         max="100"
                         value={urgency}
-                        onChange={(e)=>setUrgency(Number(e.target.value))}
+                        onChange={(e)=>
+                            setUrgency(
+                                Number(e.target.value)
+                            )
+                        }
                     />
                 </div>
 
@@ -148,7 +268,9 @@ export default function RequestHelp()
                     <button
                         type="button"
                         className="CancelButton"
-                        onClick={()=>navigate("/")}
+                        onClick={()=>
+                            navigate("/")
+                        }
                     >
                         Cancel
                     </button>
@@ -156,8 +278,15 @@ export default function RequestHelp()
                     <button
                         type="submit"
                         className="SubmitButton"
+                        disabled={submitting}
                     >
-                        Submit
+                        {
+                            submitting
+                            ?
+                            "Submitting..."
+                            :
+                            "Submit"
+                        }
                     </button>
                 </div>
             </form>
