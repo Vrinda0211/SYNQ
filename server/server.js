@@ -6,6 +6,7 @@ require("dotenv").config();
 const authRoutes=require("./routes/auth");
 const requestRoutes=require("./routes/requests");
 const offerRoutes=require("./routes/offerRoutes");
+const matchRoutes=require("./routes/matches");
 
 const app=express();
 const PORT=process.env.PORT||3001;
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes);
 app.use("/api/requests",requestRoutes);
 app.use("/api/offers",offerRoutes);
+app.use("/api/matches",matchRoutes);
 
 app.get("/",(req,res)=>
 {

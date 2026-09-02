@@ -104,6 +104,8 @@ export default function MapDashboard()
     const [loading,setLoading]=useState(true);
     const [error,setError]=useState("");
     const [selectedResource,setSelectedResource]=useState(null);
+    const [matches,setMatches]=useState([]);
+    const [matchesLoading,setMatchesLoading]=useState(false);
 
     const mapRef=useRef(null);
     const markerRefs=useRef({});
@@ -209,6 +211,99 @@ export default function MapDashboard()
         }
     }
 
+    async function loadMatches(request)
+    {
+        if(!request||!request._id)
+        {
+            setMatches([]);
+            return;
+        }
+
+        setMatchesLoading(true);
+
+        try
+        {
+            const response=await fetch(
+                `${BACKEND}/api/requests/${request._id}/matches`
+            );
+
+            if(!response.ok)
+            {
+                throw new Error("Failed to fetch matches.");
+            }
+
+            const data=await response.json();
+
+            const normalizedMatches=
+                (Array.isArray(data)
+                    ?data
+                    :[]
+                )
+                .map((item)=>
+                {
+                    const location=normalizeLocation(item);
+
+                    if(!location)
+                    {
+                        return null;
+                    }
+
+                    return{
+                        ...item,
+                        lat:location.lat,
+                        lng:location.lng
+                    };
+                })
+                .filter(Boolean);
+
+            setMatches(normalizedMatches);
+        }
+        catch(error)
+        {
+            console.error("Match load error:",error);
+            setMatches([]);
+        }
+        finally
+        {
+            setMatchesLoading(false);
+        }
+    }
+
+    function selectResource(resource)
+    {
+        setSelectedResource(resource);
+
+        if(resource.resourceType==="REQUEST")
+        {
+            loadMatches(resource);
+        }
+        else
+        {
+            setMatches([]);
+        }
+
+        const key=resourceKey(resource);
+        const marker=markerRefs.current[key];
+
+        if(marker&&mapRef.current)
+        {
+            mapRef.current.setView(
+                [resource.lat,resource.lng],
+                14
+            );
+
+            setTimeout(()=>
+            {
+                marker.openPopup();
+            },200);
+        }
+    }
+
+    function resourceKey(resource)
+    {
+        return `${resource.resourceType}-${resource._id}`;
+    }
+
     const visibleRequests=
         filter==="offers"
         ?
@@ -230,6 +325,7 @@ export default function MapDashboard()
             ...item,
             resourceType:"REQUEST"
         })),
+
         ...visibleOffers.map((item)=>
         ({
             ...item,
@@ -245,32 +341,6 @@ export default function MapDashboard()
         [firstResource.lat,firstResource.lng]
         :
         [12.9716,77.5946];
-
-    function resourceKey(resource)
-    {
-        return `${resource.resourceType}-${resource._id}`;
-    }
-
-    function selectResource(resource)
-    {
-        setSelectedResource(resource);
-
-        const key=resourceKey(resource);
-        const marker=markerRefs.current[key];
-
-        if(marker&&mapRef.current)
-        {
-            mapRef.current.setView(
-                [resource.lat,resource.lng],
-                14
-            );
-
-            setTimeout(()=>
-            {
-                marker.openPopup();
-            },200);
-        }
-    }
 
     return(
         <div className="MapDashboard">
@@ -298,6 +368,7 @@ export default function MapDashboard()
                     {
                         setFilter("all");
                         setSelectedResource(null);
+                        setMatches([]);
                     }}
                 >
                     All
@@ -315,6 +386,7 @@ export default function MapDashboard()
                     {
                         setFilter("requests");
                         setSelectedResource(null);
+                        setMatches([]);
                     }}
                 >
                     Requests
@@ -332,6 +404,7 @@ export default function MapDashboard()
                     {
                         setFilter("offers");
                         setSelectedResource(null);
+                        setMatches([]);
                     }}
                 >
                     Offers
@@ -382,7 +455,7 @@ export default function MapDashboard()
                                     eventHandlers={{
                                         click:()=>
                                         {
-                                            setSelectedResource(
+                                            selectResource(
                                             {
                                                 ...request,
                                                 resourceType:"REQUEST"
@@ -444,7 +517,7 @@ export default function MapDashboard()
                                     eventHandlers={{
                                         click:()=>
                                         {
-                                            setSelectedResource(
+                                            selectResource(
                                             {
                                                 ...offer,
                                                 resourceType:"OFFER"
@@ -573,6 +646,69 @@ export default function MapDashboard()
                                     >
                                         View on Map
                                     </button>
+
+                                    {
+                                        isSelected&&
+                                        resource.resourceType==="REQUEST"&&
+                                        <div className="MatchSection">
+                                            <h4 className="MatchTitle">
+                                                Potential Helpers
+                                            </h4>
+
+                                            {
+                                                matchesLoading&&
+                                                <p className="MatchMessage">
+                                                    Finding nearby helpers...
+                                                </p>
+                                            }
+
+                                            {
+                                                !matchesLoading&&
+                                                matches.length===0&&
+                                                <p className="MatchMessage">
+                                                    No matching offers found nearby.
+                                                </p>
+                                            }
+
+                                            {
+                                                !matchesLoading&&
+                                                matches.map((match)=>
+                                                (
+                                                    <div
+                                                        className="MatchCard"
+                                                        key={match._id}
+                                                        onClick={(event)=>
+                                                        {
+                                                            event.stopPropagation();
+                                                            selectResource(
+                                                            {
+                                                                ...match,
+                                                                resourceType:"OFFER"
+                                                            });
+                                                        }}
+                                                    >
+                                                        <span className="MatchCategory">
+                                                            OFFER
+                                                        </span>
+
+                                                        <strong>
+                                                            {
+                                                                match.resources||
+                                                                "Help available"
+                                                            }
+                                                        </strong>
+
+                                                        <span>
+                                                            {
+                                                                match.locationLabel||
+                                                                "Nearby"
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    }
                                 </div>
                             );
                         })
