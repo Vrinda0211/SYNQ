@@ -4,7 +4,7 @@ const cors=require("cors");
 require("dotenv").config();
 
 const authRoutes=require("./routes/auth");
-const requestRoutes=require("./routes/requests");
+const offerRoutes=require("./routes/offerRoutes");
 
 const app=express();
 
@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth",authRoutes);
-app.use("/api/requests",requestRoutes);
+app.use("/api/offers",offerRoutes);
 
 app.get("/",(req,res)=>
 {
