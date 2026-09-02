@@ -252,7 +252,7 @@ export default function MapDashboard()
         try
         {
             const response=await fetch(
-                `${BACKEND}/api/matches/request/${request._id}`
+                `${BACKEND}/api/requests/${request._id}/matches`
             );
 
             const data=await response.json();

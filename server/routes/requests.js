@@ -139,30 +139,41 @@ router.get("/:id/matches",async(req,res)=>
             );
         }
 
-        const [lng,lat]=request.loc.coordinates;
-
-        const matches=await Offer.find(
+        if(
+            !request.loc||
+            !Array.isArray(request.loc.coordinates)
+        )
         {
-            category:request.category,
-            loc:
-            {
-                $near:
+            return res.status(400).json(
                 {
-                    $geometry:
+                    error:"Request does not have coordinates."
+                }
+            );
+        }
+
+        const offers=await Offer.find(
+            {
+                category:request.category,
+                loc:
+                {
+                    $near:
                     {
-                        type:"Point",
-                        coordinates:[lng,lat]
-                    },
-                    $maxDistance:15000
+                        $geometry:
+                        {
+                            type:"Point",
+                            coordinates:request.loc.coordinates
+                        },
+                        $maxDistance:15000
+                    }
                 }
             }
-        }).limit(20);
+        ).limit(50);
 
-        res.json(matches);
+        res.json(offers);
     }
     catch(error)
     {
-        console.error("Error finding request matches:",error);
+        console.error("Error finding matches:",error);
 
         res.status(500).json(
             {
