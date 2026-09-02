@@ -103,8 +103,10 @@ export default function MapDashboard()
     const [filter,setFilter]=useState("all");
     const [loading,setLoading]=useState(true);
     const [error,setError]=useState("");
+    const [selectedResource,setSelectedResource]=useState(null);
 
     const mapRef=useRef(null);
+    const markerRefs=useRef({});
 
     useEffect(()=>
     {
@@ -127,20 +129,16 @@ export default function MapDashboard()
 
             if(!requestResponse.ok)
             {
-                throw new Error(
-                    "Failed to fetch requests."
-                );
+                throw new Error("Failed to fetch requests.");
             }
 
-            const requestData=
-                await requestResponse.json();
+            const requestData=await requestResponse.json();
 
             let offerData=[];
 
             if(offerResponse.ok)
             {
-                offerData=
-                    await offerResponse.json();
+                offerData=await offerResponse.json();
             }
 
             const normalizedRequests=
@@ -150,8 +148,7 @@ export default function MapDashboard()
                 )
                 .map((item)=>
                 {
-                    const location=
-                        normalizeLocation(item);
+                    const location=normalizeLocation(item);
 
                     if(!location)
                     {
@@ -173,8 +170,7 @@ export default function MapDashboard()
                 )
                 .map((item)=>
                 {
-                    const location=
-                        normalizeLocation(item);
+                    const location=normalizeLocation(item);
 
                     if(!location)
                     {
@@ -194,17 +190,10 @@ export default function MapDashboard()
         }
         catch(error)
         {
-            console.error(
-                "Map load error:",
-                error
-            );
-
+            console.error("Map load error:",error);
             setRequests([]);
             setOffers([]);
-
-            setError(
-                "Unable to load community resources."
-            );
+            setError("Unable to load community resources.");
         }
         finally
         {
@@ -241,7 +230,6 @@ export default function MapDashboard()
             ...item,
             resourceType:"REQUEST"
         })),
-
         ...visibleOffers.map((item)=>
         ({
             ...item,
@@ -249,8 +237,7 @@ export default function MapDashboard()
         }))
     ];
 
-    const firstResource=
-        allResources[0];
+    const firstResource=allResources[0];
 
     const center=
         firstResource
@@ -259,25 +246,46 @@ export default function MapDashboard()
         :
         [12.9716,77.5946];
 
+    function resourceKey(resource)
+    {
+        return `${resource.resourceType}-${resource._id}`;
+    }
+
+    function selectResource(resource)
+    {
+        setSelectedResource(resource);
+
+        const key=resourceKey(resource);
+        const marker=markerRefs.current[key];
+
+        if(marker&&mapRef.current)
+        {
+            mapRef.current.setView(
+                [resource.lat,resource.lng],
+                14
+            );
+
+            setTimeout(()=>
+            {
+                marker.openPopup();
+            },200);
+        }
+    }
+
     return(
         <div className="MapDashboard">
-
             <div className="MapHeader">
-
                 <div>
                     <h1 className="MapTitle">
                         Community Resources
                     </h1>
-
                     <p className="MapSubtitle">
                         Find people who need help and those offering assistance.
                     </p>
                 </div>
-
             </div>
 
             <div className="MapControls">
-
                 <button
                     className={
                         filter==="all"
@@ -287,8 +295,10 @@ export default function MapDashboard()
                         "FilterButton"
                     }
                     onClick={()=>
-                        setFilter("all")
-                    }
+                    {
+                        setFilter("all");
+                        setSelectedResource(null);
+                    }}
                 >
                     All
                 </button>
@@ -302,8 +312,10 @@ export default function MapDashboard()
                         "FilterButton"
                     }
                     onClick={()=>
-                        setFilter("requests")
-                    }
+                    {
+                        setFilter("requests");
+                        setSelectedResource(null);
+                    }}
                 >
                     Requests
                 </button>
@@ -317,18 +329,17 @@ export default function MapDashboard()
                         "FilterButton"
                     }
                     onClick={()=>
-                        setFilter("offers")
-                    }
+                    {
+                        setFilter("offers");
+                        setSelectedResource(null);
+                    }}
                 >
                     Offers
                 </button>
-
             </div>
 
             <div className="MapContent">
-
                 <div className="MapWrapper">
-
                     <MapContainer
                         center={center}
                         zoom={12}
@@ -336,8 +347,7 @@ export default function MapDashboard()
                         scrollWheelZoom={true}
                         whenReady={(event)=>
                         {
-                            mapRef.current=
-                                event.target;
+                            mapRef.current=event.target;
 
                             setTimeout(()=>
                             {
@@ -345,195 +355,230 @@ export default function MapDashboard()
                             },300);
                         }}
                     >
-
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; OpenStreetMap contributors'
+                            attribution="&copy; OpenStreetMap contributors"
                         />
 
                         {visibleRequests.map((request)=>
-                        (
-                            <Marker
-                                key={`request-${request._id}`}
-                                position={
-                                    [
+                        {
+                            const key=`request-${request._id}`;
+
+                            return(
+                                <Marker
+                                    key={key}
+                                    position={[
                                         request.lat,
                                         request.lng
-                                    ]
-                                }
-                                icon={requestPin}
-                            >
-
-                                <Popup>
-                                    <div className="MapPopup">
-
-                                        <span className="PopupType request">
-                                            REQUEST
-                                        </span>
-
-                                        <h3>
-                                            {
-                                                request.category||
-                                                "Request"
-                                            }
-                                        </h3>
-
-                                        <p>
-                                            {
-                                                request.details||
-                                                "No details provided."
-                                            }
-                                        </p>
-
+                                    ]}
+                                    icon={requestPin}
+                                    ref={(marker)=>
+                                    {
+                                        if(marker)
                                         {
-                                            request.locationLabel&&
-                                            <span className="PopupLocation">
-                                                {request.locationLabel}
-                                            </span>
+                                            markerRefs.current[key]=marker;
                                         }
+                                    }}
+                                    eventHandlers={{
+                                        click:()=>
+                                        {
+                                            setSelectedResource(
+                                            {
+                                                ...request,
+                                                resourceType:"REQUEST"
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <Popup>
+                                        <div className="MapPopup">
+                                            <span className="PopupType request">
+                                                REQUEST
+                                            </span>
 
-                                    </div>
-                                </Popup>
+                                            <h3>
+                                                {
+                                                    request.category||
+                                                    "Request"
+                                                }
+                                            </h3>
 
-                            </Marker>
-                        ))}
+                                            <p>
+                                                {
+                                                    request.details||
+                                                    "No details provided."
+                                                }
+                                            </p>
+
+                                            {
+                                                request.locationLabel&&
+                                                <span className="PopupLocation">
+                                                    {request.locationLabel}
+                                                </span>
+                                            }
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
 
                         {visibleOffers.map((offer)=>
-                        (
-                            <Marker
-                                key={`offer-${offer._id}`}
-                                position={
-                                    [
+                        {
+                            const key=`offer-${offer._id}`;
+
+                            return(
+                                <Marker
+                                    key={key}
+                                    position={[
                                         offer.lat,
                                         offer.lng
-                                    ]
-                                }
-                                icon={offerPin}
-                            >
-
-                                <Popup>
-                                    <div className="MapPopup">
-
-                                        <span className="PopupType offer">
-                                            OFFER
-                                        </span>
-
-                                        <h3>
-                                            {
-                                                offer.category||
-                                                "Offer"
-                                            }
-                                        </h3>
-
-                                        <p>
-                                            {
-                                                offer.resources||
-                                                "No details provided."
-                                            }
-                                        </p>
-
+                                    ]}
+                                    icon={offerPin}
+                                    ref={(marker)=>
+                                    {
+                                        if(marker)
                                         {
-                                            offer.locationLabel&&
-                                            <span className="PopupLocation">
-                                                {offer.locationLabel}
-                                            </span>
+                                            markerRefs.current[key]=marker;
                                         }
+                                    }}
+                                    eventHandlers={{
+                                        click:()=>
+                                        {
+                                            setSelectedResource(
+                                            {
+                                                ...offer,
+                                                resourceType:"OFFER"
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <Popup>
+                                        <div className="MapPopup">
+                                            <span className="PopupType offer">
+                                                OFFER
+                                            </span>
 
-                                    </div>
-                                </Popup>
+                                            <h3>
+                                                {
+                                                    offer.category||
+                                                    "Offer"
+                                                }
+                                            </h3>
 
-                            </Marker>
-                        ))}
+                                            <p>
+                                                {
+                                                    offer.resources||
+                                                    "No details provided."
+                                                }
+                                            </p>
 
+                                            {
+                                                offer.locationLabel&&
+                                                <span className="PopupLocation">
+                                                    {offer.locationLabel}
+                                                </span>
+                                            }
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            );
+                        })}
                     </MapContainer>
-
                 </div>
 
                 <aside className="ResourcePanel">
-
                     <h2 className="ResourcePanelTitle">
                         Nearby Resources
                     </h2>
 
-                    {
-                        loading&&
+                    {loading&&
                         <div className="EmptyResources">
-                            <p>
-                                Loading resources...
-                            </p>
+                            <p>Loading resources...</p>
                         </div>
                     }
 
-                    {
-                        !loading&&error&&
+                    {!loading&&error&&
                         <div className="EmptyResources">
-                            <p>
-                                {error}
-                            </p>
+                            <p>{error}</p>
                         </div>
                     }
 
-                    {
-                        !loading&&
-                        !error&&
-                        allResources.length===0&&
+                    {!loading&&!error&&allResources.length===0&&
                         <div className="EmptyResources">
-                            <p>
-                                No resources to display yet.
-                            </p>
-
+                            <p>No resources to display yet.</p>
                             <span>
                                 Submit a request or offer to get started.
                             </span>
                         </div>
                     }
 
-                    {
-                        !loading&&
-                        !error&&
+                    {!loading&&!error&&
                         allResources.map((resource,index)=>
-                        (
-                            <div
-                                className="ResourceCard"
-                                key={
-                                    `${resource.resourceType}-${resource._id||index}`
-                                }
-                            >
+                        {
+                            const key=
+                                `${resource.resourceType}-${resource._id||index}`;
 
-                                <span className="ResourceType">
-                                    {resource.resourceType}
-                                </span>
+                            const isSelected=
+                                selectedResource&&
+                                resourceKey(selectedResource)===key;
 
-                                <h3 className="ResourceTitle">
-                                    {
-                                        resource.category||
-                                        "Community Resource"
+                            return(
+                                <div
+                                    className={
+                                        isSelected
+                                        ?
+                                        "ResourceCard selected"
+                                        :
+                                        "ResourceCard"
                                     }
-                                </h3>
-
-                                <p className="ResourceLocation">
-                                    {
-                                        resource.locationLabel||
-                                        "Bengaluru"
+                                    key={key}
+                                    onClick={()=>
+                                        selectResource(resource)
                                     }
-                                </p>
+                                >
+                                    <span className="ResourceType">
+                                        {resource.resourceType}
+                                    </span>
 
-                                <p className="ResourceDetails">
-                                    {
-                                        resource.details||
-                                        resource.resources||
-                                        "Community assistance available."
-                                    }
-                                </p>
+                                    <h3 className="ResourceTitle">
+                                        {
+                                            resource.category||
+                                            "Community Resource"
+                                        }
+                                    </h3>
 
-                            </div>
-                        ))
+                                    <p className="ResourceLocation">
+                                        {
+                                            resource.locationLabel||
+                                            "Bengaluru"
+                                        }
+                                    </p>
+
+                                    <p className="ResourceDetails">
+                                        {
+                                            resource.details||
+                                            resource.resources||
+                                            "Community assistance available."
+                                        }
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        className="ResourceMapButton"
+                                        onClick={(event)=>
+                                        {
+                                            event.stopPropagation();
+                                            selectResource(resource);
+                                        }}
+                                    >
+                                        View on Map
+                                    </button>
+                                </div>
+                            );
+                        })
                     }
-
                 </aside>
-
             </div>
-
         </div>
     );
 }
