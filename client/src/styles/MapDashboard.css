@@ -195,3 +195,7 @@
         min-height: auto;
     }
 }
+.Map .leaflet-tile-pane
+{
+    filter: sepia(20%) saturate(70%) brightness(104%);
+}
