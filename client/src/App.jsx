@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MapDashboard from "./pages/MapDashboard";
 import RequestOfferDetails from "./pages/RequestOfferDetails";
+import Chat from "./pages/Chat";
 
 function App()
 {
@@ -74,6 +75,10 @@ function App()
                 <Route
                     path="/details"
                     element={<RequestOfferDetails/>}
+                />
+                <Route
+                    path="/chat"
+                    element={<Chat/>}
                 />
             </Routes>
         </>

@@ -1,0 +1,324 @@
+.ChatPage
+{
+    min-height:100vh;
+    padding:110px 28px 40px;
+    box-sizing:border-box;
+    color:#D5B893;
+    background-image:url("../assets/images/hero-bg.png");
+    background-size:cover;
+    background-position:center bottom;
+    background-repeat:no-repeat;
+}
+
+.ChatContainer
+{
+    max-width:1200px;
+    margin:0 auto;
+}
+
+.ChatHeader
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:22px;
+}
+
+.ChatEyebrow
+{
+    margin:0 0 6px;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    color:rgba(213,184,147,0.7);
+}
+
+.ChatHeader h1
+{
+    margin:0;
+    font-family:"Playfair Display",serif;
+    font-size:42px;
+    color:#D5B893;
+}
+
+.ChatExitTop
+{
+    border:1px solid rgba(213,184,147,0.18);
+    border-radius:10px;
+    padding:11px 18px;
+    background:rgba(16,34,54,0.72);
+    color:#D5B893;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.ChatLayout
+{
+    display:grid;
+    grid-template-columns:440px 1fr;
+    gap:22px;
+    min-height:570px;
+}
+
+.ChatMapCard
+{
+    padding:14px;
+    border-radius:14px;
+    background:rgba(16,34,54,0.28);
+    border:1px solid rgba(255,255,255,0.05);
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+
+.ChatMap
+{
+    width:100%;
+    height:540px;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.ChatMap .leaflet-tile-pane
+{
+    filter:sepia(20%) saturate(70%) brightness(104%);
+}
+
+.ChatBox
+{
+    min-height:540px;
+    padding:26px;
+    box-sizing:border-box;
+    border-radius:14px;
+    background:rgba(245,233,218,0.95);
+    color:#102236;
+    box-shadow:0 8px 30px rgba(0,0,0,0.18);
+    display:flex;
+    flex-direction:column;
+}
+
+.ChatBox h2
+{
+    margin:0;
+    text-align:center;
+    font-family:"Playfair Display",serif;
+    font-size:30px;
+}
+
+.ChatSubtitle
+{
+    margin:6px 0 18px;
+    text-align:center;
+    color:rgba(16,34,54,0.6);
+}
+
+.ChatMessages
+{
+    flex:1;
+    min-height:300px;
+    margin-bottom:16px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:4px;
+}
+
+.ChatMessageRow
+{
+    display:flex;
+}
+
+.ChatMessageRow.mine
+{
+    justify-content:flex-end;
+}
+
+.ChatMessageRow.other
+{
+    justify-content:flex-start;
+}
+
+.ChatBubble
+{
+    max-width:70%;
+    padding:10px 14px;
+    border-radius:14px;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+.ChatBubble.mine
+{
+    background:#632024;
+    color:#fff;
+    box-shadow:0 6px 14px rgba(99,32,36,0.18);
+}
+
+.ChatBubble.other
+{
+    background:rgba(16,34,54,0.1);
+    color:#102236;
+}
+
+.ChatTime
+{
+    margin-top:6px;
+    font-size:11px;
+    opacity:0.65;
+    text-align:right;
+}
+
+.ChatBubble.other .ChatTime
+{
+    text-align:left;
+}
+
+.ChatNoMessages
+{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:250px;
+    color:rgba(16,34,54,0.45);
+    text-align:center;
+}
+
+.ChatInputRow
+{
+    display:flex;
+    gap:10px;
+}
+
+.ChatInputRow input
+{
+    flex:1;
+    height:44px;
+    box-sizing:border-box;
+    border-radius:10px;
+    border:1px solid rgba(0,0,0,0.1);
+    padding:0 12px;
+    outline:none;
+    font:inherit;
+    color:#102236;
+    background:#fff;
+}
+
+.ChatInputRow input:focus
+{
+    border-color:rgba(99,32,36,0.45);
+}
+
+.ChatInputRow button
+{
+    padding:0 24px;
+    border:none;
+    border-radius:10px;
+    background:#102236;
+    color:#D5B893;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.ChatExitButton
+{
+    margin:16px auto 0;
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    background:#632024;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.ChatEmpty
+{
+    max-width:600px;
+    margin:120px auto;
+    padding:40px;
+    text-align:center;
+    border-radius:16px;
+    background:rgba(16,34,54,0.75);
+    box-shadow:0 8px 30px rgba(0,0,0,0.35);
+}
+
+.ChatEmpty h2
+{
+    margin-top:0;
+    font-family:"Playfair Display",serif;
+}
+
+.ChatEmpty p
+{
+    color:rgba(213,184,147,0.8);
+}
+
+.ChatEmpty button
+{
+    margin-top:14px;
+    padding:11px 20px;
+    border:none;
+    border-radius:10px;
+    background:#D5B893;
+    color:#102236;
+    font-weight:700;
+    cursor:pointer;
+}
+
+@media(max-width:900px)
+{
+    .ChatLayout
+    {
+        grid-template-columns:1fr;
+    }
+
+    .ChatMap
+    {
+        height:350px;
+    }
+
+    .ChatMapCard
+    {
+        min-height:380px;
+    }
+}
+
+@media(max-width:520px)
+{
+    .ChatPage
+    {
+        padding:95px 16px 30px;
+    }
+
+    .ChatHeader
+    {
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .ChatHeader h1
+    {
+        font-size:34px;
+    }
+
+    .ChatExitTop
+    {
+        width:100%;
+    }
+
+    .ChatBox
+    {
+        padding:18px;
+    }
+
+    .ChatInputRow
+    {
+        flex-direction:column;
+    }
+
+    .ChatInputRow button
+    {
+        height:44px;
+    }
+}
