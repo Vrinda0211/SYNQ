@@ -16,7 +16,10 @@ router.post("/",async(req,res)=>
             locationLabel:req.body.locationLabel||req.body.location||undefined
         };
 
-        if(req.body.loc&&Array.isArray(req.body.loc.coordinates))
+        if(
+            req.body.loc&&
+            Array.isArray(req.body.loc.coordinates)
+        )
         {
             payload.loc=req.body.loc;
         }
@@ -57,7 +60,11 @@ router.get("/",async(req,res)=>
 {
     try
     {
-        const {near,radius=15000,category}=req.query;
+        const {
+            near,
+            radius=15000,
+            category
+        }=req.query;
 
         const filter={};
 
@@ -104,6 +111,35 @@ router.get("/",async(req,res)=>
         res.status(500).json(
             {
                 error:err.message||"Failed to fetch offers"
+            }
+        );
+    }
+});
+
+router.get("/:id",async(req,res)=>
+{
+    try
+    {
+        const offer=await Offer.findById(req.params.id);
+
+        if(!offer)
+        {
+            return res.status(404).json(
+                {
+                    error:"Offer not found"
+                }
+            );
+        }
+
+        res.json(offer);
+    }
+    catch(err)
+    {
+        console.error("Error fetching offer:",err);
+
+        res.status(500).json(
+            {
+                error:err.message||"Failed to fetch offer"
             }
         );
     }

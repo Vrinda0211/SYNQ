@@ -7,6 +7,7 @@ import OfferHelp from "./pages/OfferHelp";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MapDashboard from "./pages/MapDashboard";
+import RequestOfferDetails from "./pages/RequestOfferDetails";
 
 function App()
 {
@@ -19,6 +20,10 @@ function App()
     function handleLogin(userData)
     {
         setUser(userData);
+        localStorage.setItem(
+            "synq_user",
+            JSON.stringify(userData)
+        );
     }
 
     function handleLogout()
@@ -36,12 +41,40 @@ function App()
             />
 
             <Routes>
-                <Route path="/" element={<Home user={user}/>}/>
-                <Route path="/request" element={<RequestHelp user={user}/>}/>
-                <Route path="/offer" element={<OfferHelp user={user}/>}/>
-                <Route path="/login" element={<Login onLogin={handleLogin}/>}/>
-                <Route path="/signup" element={<Signup onLogin={handleLogin}/>}/>
-                <Route path="/map" element={<MapDashboard/>}/>
+                <Route
+                    path="/"
+                    element={<Home user={user}/>}
+                />
+
+                <Route
+                    path="/request"
+                    element={<RequestHelp user={user}/>}
+                />
+
+                <Route
+                    path="/offer"
+                    element={<OfferHelp user={user}/>}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login onLogin={handleLogin}/>}
+                />
+
+                <Route
+                    path="/signup"
+                    element={<Signup onLogin={handleLogin}/>}
+                />
+
+                <Route
+                    path="/map"
+                    element={<MapDashboard/>}
+                />
+
+                <Route
+                    path="/details"
+                    element={<RequestOfferDetails/>}
+                />
             </Routes>
         </>
     );
