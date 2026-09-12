@@ -5,6 +5,7 @@ import {
     Marker,
     Popup
 } from "react-leaflet";
+import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/MapDashboard.css";
@@ -114,6 +115,8 @@ function normalizeLocation(item)
 
 export default function MapDashboard()
 {
+    const navigate=useNavigate();
+
     const [requests,setRequests]=useState([]);
     const [offers,setOffers]=useState([]);
     const [filter,setFilter]=useState("all");
@@ -487,6 +490,17 @@ export default function MapDashboard()
                                         <button
                                             className="MatchButton"
                                             onClick={()=>
+                                                navigate(
+                                                    `/details?request=${request._id}`
+                                                )
+                                            }
+                                        >
+                                            View Details
+                                        </button>
+
+                                        <button
+                                            className="MatchButton"
+                                            onClick={()=>
                                                 findMatches(request)
                                             }
                                         >
@@ -545,6 +559,17 @@ export default function MapDashboard()
                                                 {offer.locationLabel}
                                             </span>
                                         }
+
+                                        <button
+                                            className="MatchButton"
+                                            onClick={()=>
+                                                navigate(
+                                                    `/details?offer=${offer._id}`
+                                                )
+                                            }
+                                        >
+                                            View Details
+                                        </button>
 
                                     </div>
                                 </Popup>
@@ -637,6 +662,17 @@ export default function MapDashboard()
                                             }
                                         </p>
 
+                                        <button
+                                            className="MatchButton"
+                                            onClick={()=>
+                                                navigate(
+                                                    `/details?offer=${offer._id}`
+                                                )
+                                            }
+                                        >
+                                            View Details
+                                        </button>
+
                                     </div>
                                 ))
                             }
@@ -714,6 +750,27 @@ export default function MapDashboard()
                                         "Community assistance available."
                                     }
                                 </p>
+
+                                <button
+                                    className="MatchButton"
+                                    onClick={()=>
+                                    {
+                                        if(resource.resourceType==="REQUEST")
+                                        {
+                                            navigate(
+                                                `/details?request=${resource._id}`
+                                            );
+                                        }
+                                        else
+                                        {
+                                            navigate(
+                                                `/details?offer=${resource._id}`
+                                            );
+                                        }
+                                    }}
+                                >
+                                    View Details
+                                </button>
 
                             </div>
                         ))
